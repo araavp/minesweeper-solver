@@ -13,7 +13,7 @@ total_mines = 99
 count = 0
 nonzero_heights = []
 nonzero_widths = []
-ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos = 0, 0, 0, 0, 0, 0, 0, 0
+ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos = None, None, None, None, None, None, None, None
 
 
 def show_board(mine_board):
@@ -59,18 +59,63 @@ def find_nonzero(mine_board):
 
 def find_surrounding_empty(mine_board, row, col):
     global ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos
-    try:
-        ul_pos = mine_board[row-1][col-1]
-        u_pos = mine_board[row-1][col]
-        ur_pos = mine_board[row-1][col+1]
-        r_pos = mine_board[row][col+1]
-        br_pos = mine_board[row+1][col+1]
-        b_pos = mine_board[row+1][col]
-        bl_pos = mine_board[row+1][col-1]
-        l_pos = mine_board[row][col-1]
-        return ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos
-    except IndexError:
-        print("error")
+    ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos = None, None, None, None, None, None, None, None
+    if row == 0:
+        if col == 0:
+            r_pos = mine_board[row][col + 1]
+            br_pos = mine_board[row + 1][col + 1]
+            b_pos = mine_board[row + 1][col]
+        elif 0 < col < 29:
+            r_pos = mine_board[row][col + 1]
+            br_pos = mine_board[row + 1][col + 1]
+            b_pos = mine_board[row + 1][col]
+            bl_pos = mine_board[row + 1][col - 1]
+            l_pos = mine_board[row][col - 1]
+        elif col == 29:
+            ul_pos = mine_board[row - 1][col - 1]
+            u_pos = mine_board[row - 1][col]
+            b_pos = mine_board[row + 1][col]
+            bl_pos = mine_board[row + 1][col - 1]
+            l_pos = mine_board[row][col - 1]
+    elif 0 < row < 15:
+        if col == 0:
+            u_pos = mine_board[row - 1][col]
+            ur_pos = mine_board[row - 1][col + 1]
+            r_pos = mine_board[row][col + 1]
+            br_pos = mine_board[row + 1][col + 1]
+            b_pos = mine_board[row + 1][col]
+        elif 0 < col < 29:
+            ul_pos = mine_board[row - 1][col - 1]
+            u_pos = mine_board[row - 1][col]
+            ur_pos = mine_board[row - 1][col + 1]
+            r_pos = mine_board[row][col + 1]
+            br_pos = mine_board[row + 1][col + 1]
+            b_pos = mine_board[row + 1][col]
+            bl_pos = mine_board[row + 1][col - 1]
+            l_pos = mine_board[row][col - 1]
+        elif col == 29:
+            ul_pos = mine_board[row - 1][col - 1]
+            u_pos = mine_board[row - 1][col]
+            b_pos = mine_board[row + 1][col]
+            bl_pos = mine_board[row + 1][col - 1]
+            l_pos = mine_board[row][col - 1]
+    elif row == 15:
+        if col == 0:
+            u_pos = mine_board[row - 1][col]
+            ur_pos = mine_board[row - 1][col + 1]
+            r_pos = mine_board[row][col + 1]
+        elif 0 < col < 29:
+            ul_pos = mine_board[row - 1][col - 1]
+            u_pos = mine_board[row - 1][col]
+            ur_pos = mine_board[row - 1][col + 1]
+            r_pos = mine_board[row][col + 1]
+            l_pos = mine_board[row][col - 1]
+        elif col == 29:
+            ul_pos = mine_board[row - 1][col - 1]
+            u_pos = mine_board[row - 1][col]
+            l_pos = mine_board[row][col - 1]
+
+    return ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos
 
 
 show_board(board)
