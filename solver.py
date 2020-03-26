@@ -14,10 +14,11 @@ count = 0
 nonzero_heights = []
 nonzero_widths = []
 ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos = None, None, None, None, None, None, None, None
+positions = [ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos]
 
 
 def show_board(mine_board):
-    print(np.matrix(board))
+    print(np.matrix(mine_board))
 
 
 def user_input(mine_board):
@@ -34,8 +35,8 @@ def user_input(mine_board):
                 width = int(input("Enter column number: ")) - 1
 
             number = int(input("What is the number at that location: "))
-            if number > 6:
-                print("Enter a number only from 0-6")
+            if number > 9:
+                print("Enter a number only from 0-8 or 9 to reset that square")
                 number = int(input("What is the number at that location: "))
 
             mine_board[height][width] = number
@@ -58,7 +59,7 @@ def find_nonzero(mine_board):
 
 
 def find_surrounding_empty(mine_board, row, col):
-    global ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos
+    global ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos, positions
     ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos = None, None, None, None, None, None, None, None
     if row == 0:
         if col == 0:
@@ -115,7 +116,45 @@ def find_surrounding_empty(mine_board, row, col):
             u_pos = mine_board[row - 1][col]
             l_pos = mine_board[row][col - 1]
 
-    return ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos
+    positions = [ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos]
+    return ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos, positions
+
+
+def find_number_surrounding_empty(mine_board, row, col):
+    global count, ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos, positions
+    for pos in range(len(positions)):
+        if positions[pos] == 9:
+            count += 1
+            print("count", count)
+    print(mine_board[row][col])
+    if count == mine_board[row][col]:
+        print("reached here")
+        for pos in range(len(positions)):
+            print(pos)
+            if positions[pos] == 9:
+                positions[pos] = "f"
+                print(pos)
+                computer_input(mine_board, pos, positions[pos], row, col)
+    return ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos, positions
+
+
+def computer_input(mine_board, pos, value, row, col):
+    if pos == 0:
+        mine_board[row - 1][col - 1] = value
+    elif pos == 1:
+        mine_board[row - 1][col] = value
+    elif pos == 2:
+        mine_board[row - 1][col + 1] = value
+    elif pos == 3:
+        mine_board[row][col + 1] = value
+    elif pos == 4:
+        mine_board[row + 1][col + 1] = value
+    elif pos == 5:
+        mine_board[row + 1][col] = value
+    elif pos == 6:
+        mine_board[row + 1][col - 1] = value
+    elif pos == 7:
+        mine_board[row][col - 1] = value
 
 
 show_board(board)
@@ -124,3 +163,7 @@ show_board(board)
 find_nonzero(board)
 for x in range(len(nonzero_heights)):
     find_surrounding_empty(board, nonzero_heights[x], nonzero_widths[x])
+    print(positions)
+    find_number_surrounding_empty(board, nonzero_heights[x], nonzero_widths[x])
+
+show_board(board)
