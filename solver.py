@@ -8,7 +8,7 @@ import numpy as np
 
 board_height = 16
 board_width = 30
-board = [[0 for x in range(board_width)] for y in range(board_height)]
+board = [[9 for x in range(board_width)] for y in range(board_height)]
 total_mines = 99
 count = 0
 nonzero_heights = []
@@ -50,27 +50,32 @@ def user_input(mine_board):
 def find_nonzero(mine_board):
     for i in range(len(mine_board)):
         for j in range(len(mine_board[0])):
-            if mine_board[i][j] != 0:
+            if mine_board[i][j] != 9:
                 nonzero_heights.append(i)
                 nonzero_widths.append(j)
 
     return nonzero_heights, nonzero_widths
 
 
-def find_surrounding_empty(mine_board, row, column):
+def find_surrounding_empty(mine_board, row, col):
+    global ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos
     try:
-        return
+        ul_pos = mine_board[row-1][col-1]
+        u_pos = mine_board[row-1][col]
+        ur_pos = mine_board[row-1][col+1]
+        r_pos = mine_board[row][col+1]
+        br_pos = mine_board[row+1][col+1]
+        b_pos = mine_board[row+1][col]
+        bl_pos = mine_board[row+1][col-1]
+        l_pos = mine_board[row][col-1]
+        return ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos
     except IndexError:
-        return None
-
-
-"""
-for x in range(len(nonzero_heights)):
-    find_surrounding_empty(board, nonzero_heights[x], nonzero_widths[x])
-"""
+        print("error")
 
 
 show_board(board)
 user_input(board)
 show_board(board)
 find_nonzero(board)
+for x in range(len(nonzero_heights)):
+    find_surrounding_empty(board, nonzero_heights[x], nonzero_widths[x])
