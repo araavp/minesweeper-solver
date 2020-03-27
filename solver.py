@@ -1,10 +1,12 @@
 # Minesweeper Solver
 # For expert mode on minesweeperonline.com
 # 16 x 30 board with 99 mines
-
-import keyboard
-import numpy as np
-
+"""
+1-8 are number of surrounding bombs
+9 is empty square
+b stands for bomb
+c stands for next space for user to choose
+"""
 
 board_height = 16
 board_width = 30
@@ -18,7 +20,9 @@ positions = [ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos]
 
 
 def show_board(mine_board):
-    print(np.matrix(mine_board))
+    for i in range(len(mine_board)):
+        print(mine_board[i], sep=',')
+    print()
 
 
 def user_input(mine_board):
@@ -122,19 +126,27 @@ def find_surrounding_empty(mine_board, row, col):
 
 def find_number_surrounding_empty(mine_board, row, col):
     global count, ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos, positions
+    count = 0
+    for pos in range(len(positions)):
+        if positions[pos] == "b":
+            count += 1
+            if count == mine_board[row][col]:
+                for position in range(len(positions)):
+                    if positions[position] == 9:
+                        positions[position] = "c"
+                        computer_input(mine_board, position, positions[position], row, col)
+                return ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos, positions
+
     for pos in range(len(positions)):
         if positions[pos] == 9:
             count += 1
-            print("count", count)
-    print(mine_board[row][col])
+
     if count == mine_board[row][col]:
-        print("reached here")
         for pos in range(len(positions)):
-            print(pos)
             if positions[pos] == 9:
-                positions[pos] = "f"
-                print(pos)
+                positions[pos] = "b"
                 computer_input(mine_board, pos, positions[pos], row, col)
+
     return ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos, positions
 
 
@@ -157,13 +169,16 @@ def computer_input(mine_board, pos, value, row, col):
         mine_board[row][col - 1] = value
 
 
+def find_bombs(mine_board, height_array, width_array):
+    for x in range(len(height_array)):
+        find_surrounding_empty(mine_board, height_array[x], width_array[x])
+        # show_board(mine_board)
+        find_number_surrounding_empty(mine_board, height_array[x], width_array[x])
+
+
 show_board(board)
 user_input(board)
 show_board(board)
 find_nonzero(board)
-for x in range(len(nonzero_heights)):
-    find_surrounding_empty(board, nonzero_heights[x], nonzero_widths[x])
-    print(positions)
-    find_number_surrounding_empty(board, nonzero_heights[x], nonzero_widths[x])
-
+find_bombs(board, nonzero_heights, nonzero_widths)
 show_board(board)
