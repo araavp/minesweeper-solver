@@ -17,6 +17,9 @@ nonzero_heights = []
 nonzero_widths = []
 ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos = None, None, None, None, None, None, None, None
 positions = [ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos]
+number = 0
+u_input = ""
+user_quit = ""
 
 
 def show_board(mine_board):
@@ -26,6 +29,7 @@ def show_board(mine_board):
 
 
 def user_input(mine_board):
+    global number, u_input, user_quit
     while True:
         try:
             height = int(input("Enter row number: ")) - 1
@@ -52,14 +56,46 @@ def user_input(mine_board):
                 continue
 
 
+def c_user_input(mine_board):
+    global number, u_input, user_quit
+    check = 0
+    for i in range(len(mine_board)):
+        for j in range(len(mine_board[0])):
+            if mine_board[i][j] == "c":
+                check += 1
+                print("You can click on the box at row: ", i+1, "and col: ", j+1, " or type q to quit")
+                u_input = input("What number does it show: ")
+                if u_input == "q":
+                    user_quit = input("Are you sure you want to quit (y/n): ")
+                    if user_quit == 'y':
+                        exit()
+                    elif user_quit == 'n':
+                        u_input = input("What number does it show: ")
+                number = int(u_input)
+                if number > 8 or number < 0:
+                    print("Please print an integer from 0-8")
+                    number = int(input("What number does it show: "))
+                mine_board[i][j] = number
+
+    if check != 0:
+        find_nonzero(mine_board)
+    else:
+        return
+
+
 def find_nonzero(mine_board):
+    global nonzero_heights, nonzero_widths
+    nonzero_heights = []
+    nonzero_widths = []
     for i in range(len(mine_board)):
         for j in range(len(mine_board[0])):
             if mine_board[i][j] != 9:
                 nonzero_heights.append(i)
                 nonzero_widths.append(j)
-
-    return nonzero_heights, nonzero_widths
+    if len(nonzero_heights) != 0:
+        find_bombs(mine_board, nonzero_heights, nonzero_widths)
+    else:
+        return
 
 
 def find_surrounding_empty(mine_board, row, col):
@@ -135,6 +171,7 @@ def find_number_surrounding_empty(mine_board, row, col):
                     if positions[position] == 9:
                         positions[position] = "c"
                         computer_input(mine_board, position, positions[position], row, col)
+
                 return ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos, positions
 
     for pos in range(len(positions)):
@@ -174,11 +211,12 @@ def find_bombs(mine_board, height_array, width_array):
         find_surrounding_empty(mine_board, height_array[x], width_array[x])
         # show_board(mine_board)
         find_number_surrounding_empty(mine_board, height_array[x], width_array[x])
+    show_board(mine_board)
+    c_user_input(mine_board)
 
 
 show_board(board)
 user_input(board)
 show_board(board)
 find_nonzero(board)
-find_bombs(board, nonzero_heights, nonzero_widths)
 show_board(board)
