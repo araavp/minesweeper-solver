@@ -22,6 +22,14 @@ u_input = ""
 user_quit = ""
 
 
+def start(mine_board):
+    show_board(mine_board)
+    user_input(mine_board)
+    show_board(mine_board)
+    find_nonzero(mine_board)
+    show_board(mine_board)
+
+
 def show_board(mine_board):
     for i in range(len(mine_board)):
         print(mine_board[i], sep=',')
@@ -32,6 +40,7 @@ def user_input(mine_board):
     global number, u_input, user_quit
     while True:
         try:
+            print("You can press q to quit at anytime")
             height = int(input("Enter row number: ")) - 1
             if height > (len(mine_board) - 1):
                 print("Enter a number only from 1-16")
@@ -215,8 +224,4 @@ def find_bombs(mine_board, height_array, width_array):
     c_user_input(mine_board)
 
 
-show_board(board)
-user_input(board)
-show_board(board)
-find_nonzero(board)
-show_board(board)
+start(board)
