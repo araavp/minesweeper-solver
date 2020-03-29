@@ -38,7 +38,7 @@ def start(mine_board):
 
 def show_board(mine_board):
     for i in range(len(mine_board)):
-        print(mine_board[i], sep=',')
+        print(*mine_board[i], sep=',')
     print()
 
 
@@ -66,7 +66,7 @@ def user_input(mine_board):
                 mine_board[height][width] = number
             elif number_input == 'b':
                 mine_board[height][width] = number_input
-                
+
         except ValueError:
             user_quit = input("Press u to add more user input, c to continue, or q to quit program")
             if user_quit == 'u':
