@@ -3,14 +3,14 @@
 # 16 x 30 board with 99 mines
 """
 1-8 are number of surrounding bombs
-9 is empty square
+- is empty square
 b stands for bomb
 c stands for next space for user to choose
 """
 
 board_height = 16
 board_width = 30
-board = [[9 for x in range(board_width)] for y in range(board_height)]
+board = [["-" for x in range(board_width)] for y in range(board_height)]
 total_mines = 99
 count = 0
 nonzero_heights = []
@@ -38,7 +38,7 @@ def start(mine_board):
 
 def show_board(mine_board):
     for i in range(len(mine_board)):
-        print(*mine_board[i], sep=',')
+        print(*mine_board[i], sep=' ')
     print()
 
 
@@ -63,7 +63,10 @@ def user_input(mine_board):
                 if number > 9:
                     print("Enter a number only from 0-8 or 9 to reset that square")
                     number = int(input("What is the number at that location: "))
-                mine_board[height][width] = number
+                if number == 9:
+                    mine_board[height][width] = "-"
+                if -1 < number < 9:
+                    mine_board[height][width] = number
             elif number_input == 'b':
                 mine_board[height][width] = number_input
 
@@ -114,7 +117,7 @@ def find_nonzero(mine_board):
     nonzero_widths = []
     for i in range(len(mine_board)):
         for j in range(len(mine_board[0])):
-            if mine_board[i][j] != 9 and mine_board[i][j] != 'b':
+            if mine_board[i][j] != "-" and mine_board[i][j] != 'b':
                 print(mine_board[i][j])
                 nonzero_heights.append(i)
                 nonzero_widths.append(j)
@@ -194,19 +197,19 @@ def find_number_surrounding_empty(mine_board, row, col):
             count += 1
             if count == mine_board[row][col]:
                 for position in range(len(positions)):
-                    if positions[position] == 9:
+                    if positions[position] == "-":
                         positions[position] = "c"
                         computer_input(mine_board, position, positions[position], row, col)
 
                 return ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos, positions
 
     for pos in range(len(positions)):
-        if positions[pos] == 9:
+        if positions[pos] == "-":
             count += 1
 
     if count == mine_board[row][col]:
         for pos in range(len(positions)):
-            if positions[pos] == 9:
+            if positions[pos] == "-":
                 positions[pos] = "b"
                 computer_input(mine_board, pos, positions[pos], row, col)
 
