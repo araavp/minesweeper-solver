@@ -18,14 +18,20 @@ nonzero_widths = []
 ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos = None, None, None, None, None, None, None, None
 positions = [ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos]
 number = 0
+number_input = ""
 u_input = ""
 user_quit = ""
+more_input = ""
+height = 0
+width = 0
 
 
 def start(mine_board):
     show_board(mine_board)
     user_input(mine_board)
+    print("reached here")
     show_board(mine_board)
+    print("reached here part 2")
     find_nonzero(mine_board)
     show_board(mine_board)
 
@@ -37,36 +43,42 @@ def show_board(mine_board):
 
 
 def user_input(mine_board):
-    global number, u_input, user_quit
+    global number, u_input, user_quit, number_input, height, width
+    print("You can press q to quit at anytime")
     while True:
         try:
-            print("You can press q to quit at anytime")
             height = int(input("Enter row number: ")) - 1
-            if height > (len(mine_board) - 1):
+            if height > (len(mine_board) - 1) or height == -1:
                 print("Enter a number only from 1-16")
                 height = int(input("Enter row number: ")) - 1
 
             width = int(input("Enter column number: ")) - 1
-            if width > (len(mine_board[0]) - 1):
+            if width > (len(mine_board[0]) - 1) or width == -1:
                 print("Enter a number only from 1-30")
                 width = int(input("Enter column number: ")) - 1
 
-            number = int(input("What is the number at that location: "))
-            if number > 9:
-                print("Enter a number only from 0-8 or 9 to reset that square")
-                number = int(input("What is the number at that location: "))
-
-            mine_board[height][width] = number
+            number_input = input("What is the number or bomb at that location? If it is a bomb type b: ")
+            if number_input != 'b':
+                number = int(number_input)
+                if number > 9:
+                    print("Enter a number only from 0-8 or 9 to reset that square")
+                    number = int(input("What is the number at that location: "))
+                mine_board[height][width] = number
+            elif number_input == 'b':
+                mine_board[height][width] = number_input
+                
         except ValueError:
-            user_quit = input("Press q to quit or c to continue")
-            if user_quit == 'q':
-                break
-            elif user_quit == 'c':
+            user_quit = input("Press u to add more user input, c to continue, or q to quit program")
+            if user_quit == 'u':
                 continue
+            elif user_quit == 'c':
+                break
+            elif user_quit == 'q':
+                exit()
 
 
 def c_user_input(mine_board):
-    global number, u_input, user_quit
+    global number, u_input, user_quit, more_input
     check = 0
     for i in range(len(mine_board)):
         for j in range(len(mine_board[0])):
@@ -86,6 +98,10 @@ def c_user_input(mine_board):
                     number = int(input("What number does it show: "))
                 mine_board[i][j] = number
 
+    more_input = input("Do you have new squares to input? (y/n)")
+    if more_input == 'y':
+        user_input(mine_board)
+
     if check != 0:
         find_nonzero(mine_board)
     else:
@@ -98,7 +114,8 @@ def find_nonzero(mine_board):
     nonzero_widths = []
     for i in range(len(mine_board)):
         for j in range(len(mine_board[0])):
-            if mine_board[i][j] != 9:
+            if mine_board[i][j] != 9 and mine_board[i][j] != 'b':
+                print(mine_board[i][j])
                 nonzero_heights.append(i)
                 nonzero_widths.append(j)
     if len(nonzero_heights) != 0:
@@ -218,7 +235,6 @@ def computer_input(mine_board, pos, value, row, col):
 def find_bombs(mine_board, height_array, width_array):
     for x in range(len(height_array)):
         find_surrounding_empty(mine_board, height_array[x], width_array[x])
-        # show_board(mine_board)
         find_number_surrounding_empty(mine_board, height_array[x], width_array[x])
     show_board(mine_board)
     c_user_input(mine_board)
