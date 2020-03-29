@@ -26,6 +26,7 @@ height = 0
 width = 0
 
 
+# Starts minesweeper solver
 def start(mine_board):
     show_board(mine_board)
     user_input(mine_board)
@@ -36,12 +37,14 @@ def start(mine_board):
     show_board(mine_board)
 
 
+# Displays board
 def show_board(mine_board):
     for i in range(len(mine_board)):
         print(*mine_board[i], sep=' ')
     print()
 
 
+# Asks for user input
 def user_input(mine_board):
     global number, u_input, user_quit, number_input, height, width
     print("You can press q to quit at anytime")
@@ -57,6 +60,7 @@ def user_input(mine_board):
                 print("Enter a number only from 1-30")
                 width = int(input("Enter column number: ")) - 1
 
+            # Can input number or bomb - depends on whether user plays part of game without computer
             number_input = input("What is the number or bomb at that location? If it is a bomb type b: ")
             if number_input != 'b':
                 number = int(number_input)
@@ -80,6 +84,7 @@ def user_input(mine_board):
                 exit()
 
 
+# Gives computer 100% accurate suggested moves
 def c_user_input(mine_board):
     global number, u_input, user_quit, more_input
     check = 0
@@ -101,6 +106,7 @@ def c_user_input(mine_board):
                     number = int(input("What number does it show: "))
                 mine_board[i][j] = number
 
+    # Asks for further user input if user plays by themselves
     more_input = input("Do you have new squares to input? (y/n)")
     if more_input == 'y':
         user_input(mine_board)
@@ -111,6 +117,7 @@ def c_user_input(mine_board):
         return
 
 
+# Locates all squares with numbers on the board
 def find_nonzero(mine_board):
     global nonzero_heights, nonzero_widths
     nonzero_heights = []
@@ -127,6 +134,7 @@ def find_nonzero(mine_board):
         return
 
 
+# Determine which squares are surrounding a certain position
 def find_surrounding_empty(mine_board, row, col):
     global ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos, positions
     ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos = None, None, None, None, None, None, None, None
@@ -189,6 +197,7 @@ def find_surrounding_empty(mine_board, row, col):
     return ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos, positions
 
 
+# Determines number of empty surrounding squares to determine which squares are bombs and which are safe
 def find_number_surrounding_empty(mine_board, row, col):
     global count, ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos, positions
     count = 0
@@ -216,6 +225,7 @@ def find_number_surrounding_empty(mine_board, row, col):
     return ul_pos, u_pos, ur_pos, r_pos, br_pos, b_pos, bl_pos, l_pos, positions
 
 
+# Assign value to square based on relative position
 def computer_input(mine_board, pos, value, row, col):
     if pos == 0:
         mine_board[row - 1][col - 1] = value
@@ -235,6 +245,7 @@ def computer_input(mine_board, pos, value, row, col):
         mine_board[row][col - 1] = value
 
 
+# Sorts through all squares with numbers
 def find_bombs(mine_board, height_array, width_array):
     for x in range(len(height_array)):
         find_surrounding_empty(mine_board, height_array[x], width_array[x])
